@@ -92,8 +92,9 @@ export function WelcomeScreen({ onYes, isSubmitting }: WelcomeScreenProps) {
 
           <motion.div
             animate={{ x: noPosition.x, y: noPosition.y }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            transition={{ type: "spring", stiffness: 500, damping: 20 }}
             onHoverStart={handleNoHover}
+            onTouchStart={handleNoHover}
             onClick={handleNoClick}
             className="absolute z-20 cursor-pointer"
             style={{ touchAction: 'none' }}
