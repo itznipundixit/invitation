@@ -52,14 +52,6 @@ export function FinalScreen({ day, time, foodId, onReset }: FinalScreenProps) {
               <span className="text-xl font-medium text-pink-600 block">
                 I'll see you then 🚗💖
               </span>
-              {onReset && (
-                <button 
-                  onClick={onReset}
-                  className="mt-6 text-xs text-pink-300 hover:text-pink-500 underline transition-colors"
-                >
-                  Start Over (Test Mode)
-                </button>
-              )}
             </div>
           </div>
         </div>
