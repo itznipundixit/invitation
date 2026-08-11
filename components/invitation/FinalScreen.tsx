@@ -14,7 +14,15 @@ interface FinalScreenProps {
 }
 
 export function FinalScreen({ day, time, foodId, onReset }: FinalScreenProps) {
-  const food = FOOD_OPTIONS.find(f => f.id === foodId);
+  const foodIds = foodId ? foodId.split(',') : [];
+  
+  const selectedFoods = foodIds.map(id => {
+    if (id.startsWith('custom:')) {
+      return { id, name: id.replace('custom:', ''), emoji: '🍽️' };
+    }
+    const found = FOOD_OPTIONS.find(f => f.id === id);
+    return found || { id, name: 'Food', emoji: '🍽️' };
+  });
 
   // Format date nicely
   let formattedDate = day;
@@ -44,14 +52,27 @@ export function FinalScreen({ day, time, foodId, onReset }: FinalScreenProps) {
               <span className="text-2xl">⏰</span>
               <span className="font-semibold">{time}</span>
             </div>
-            <div className="flex items-center justify-center gap-3 text-lg text-gray-700">
-              <span className="text-2xl">{food?.emoji || '🍽️'}</span>
-              <span className="font-semibold">{food?.name || 'Food'}</span>
+            <div className="flex flex-col items-center gap-2">
+              {selectedFoods.map((f, i) => (
+                <div key={i} className="flex items-center justify-center gap-3 text-lg text-gray-700">
+                  <span className="text-2xl">{f.emoji}</span>
+                  <span className="font-semibold">{f.name}</span>
+                </div>
+              ))}
             </div>
-            <div className="pt-4 flex flex-col items-center">
+            <div className="pt-4 flex flex-col items-center gap-4">
               <span className="text-xl font-medium text-pink-600 block">
                 I'll see you then 🚗💖
               </span>
+
+              {onReset && (
+                <button
+                  onClick={onReset}
+                  className="mt-2 px-6 py-2 text-sm text-pink-500 bg-pink-50/50 hover:bg-pink-100 border border-pink-200 rounded-full transition-all duration-300 shadow-sm"
+                >
+                  Start Over 🔄
+                </button>
+              )}
             </div>
           </div>
         </div>

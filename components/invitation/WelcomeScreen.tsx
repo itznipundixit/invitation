@@ -17,9 +17,7 @@ export function WelcomeScreen({ onYes, isSubmitting }: WelcomeScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleNoHover = () => {
-    if (noClicks < 3) {
-      moveNoButton();
-    }
+    moveNoButton();
   };
 
   const handleNoClick = () => {
@@ -33,14 +31,13 @@ export function WelcomeScreen({ onYes, isSubmitting }: WelcomeScreenProps) {
     if (!containerRef.current) return;
     
     // Keep within bounds of the card/screen
-    // YES button is in the center
     const xSign = Math.random() > 0.5 ? 1 : -1;
     const ySign = Math.random() > 0.5 ? 1 : -1;
     
-    // Move 60-120px left/right
-    const x = xSign * (60 + Math.random() * 60);
-    // Move 30-50px up/down (so it doesn't overflow the h-32 container)
-    const y = ySign * (30 + Math.random() * 20);
+    // Move 80-150px left/right
+    const x = xSign * (80 + Math.random() * 70);
+    // Move 50-100px up/down
+    const y = ySign * (50 + Math.random() * 50);
     
     setNoPosition({ x, y });
   };
@@ -54,7 +51,7 @@ export function WelcomeScreen({ onYes, isSubmitting }: WelcomeScreenProps) {
 
   return (
     <Card className="text-center flex flex-col items-center">
-      <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 relative mb-6 rounded-full overflow-hidden shadow-xl border-4 border-white mx-auto">
+      <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 relative mb-4 rounded-full overflow-hidden shadow-xl border-4 border-white mx-auto">
         <Image 
           src="/jupiter.png" 
           alt="Planet Jupiter" 
@@ -64,7 +61,7 @@ export function WelcomeScreen({ onYes, isSubmitting }: WelcomeScreenProps) {
         />
       </div>
       
-      <h1 className="text-2xl sm:text-3xl font-serif text-rose-900 mb-6 sm:mb-8 leading-tight px-2">
+      <h1 className="text-xl sm:text-2xl font-serif text-rose-900 mb-4 sm:mb-6 leading-tight px-2">
         🌸 Wanna go eat something with me Jupiter? 🌸
       </h1>
 
@@ -92,11 +89,11 @@ export function WelcomeScreen({ onYes, isSubmitting }: WelcomeScreenProps) {
 
           <motion.div
             animate={{ x: noPosition.x, y: noPosition.y }}
-            transition={{ type: "spring", stiffness: 500, damping: 20 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15 }}
             onHoverStart={handleNoHover}
             onTouchStart={handleNoHover}
             onClick={handleNoClick}
-            className="absolute z-20 cursor-pointer"
+            className="z-20 cursor-pointer"
             style={{ touchAction: 'none' }}
           >
             <Button variant="secondary" disabled={isSubmitting}>
