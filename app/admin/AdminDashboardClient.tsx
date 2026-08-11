@@ -113,6 +113,156 @@ export default function AdminDashboardClient({
     }
   };
 
+  const handleDownloadReceipt = (inv: DateInvitation) => {
+    const status = inv.final_confirmed ? 'Confirmed' : inv.accepted ? 'Accepted' : 'Pending';
+    const statusClass = inv.final_confirmed ? 'status-confirmed' : inv.accepted ? 'status-accepted' : 'status-pending';
+    
+    const receiptHTML = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+      <meta charset="UTF-8">
+      <title>Receipt - ${inv.id.slice(0,8)}</title>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          color: #111827;
+          background-color: #f9fafb;
+          padding: 40px;
+          margin: 0;
+          line-height: 1.5;
+        }
+        .receipt-container {
+          max-width: 600px;
+          margin: 0 auto;
+          background: #ffffff;
+          border-radius: 16px;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          overflow: hidden;
+        }
+        .header {
+          background: linear-gradient(135deg, #ec4899, #be185d);
+          color: white;
+          padding: 40px 30px;
+          text-align: center;
+        }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 0.5px; }
+        .header p { margin: 8px 0 0; opacity: 0.9; font-size: 15px; }
+        .content { padding: 40px 30px; }
+        .detail-row {
+          display: flex;
+          justify-content: space-between;
+          padding: 16px 0;
+          border-bottom: 1px dashed #e5e7eb;
+        }
+        .detail-row:last-of-type { border-bottom: none; }
+        .detail-label { color: #6b7280; font-weight: 500; font-size: 15px; }
+        .detail-value { font-weight: 600; color: #111827; font-size: 15px; text-align: right; }
+        .status-badge {
+          padding: 6px 14px;
+          border-radius: 9999px;
+          font-size: 13px;
+          font-weight: 600;
+          display: inline-block;
+        }
+        .status-confirmed { background: #fce7f3; color: #9d174d; }
+        .status-accepted { background: #d1fae5; color: #065f46; }
+        .status-pending { background: #f3f4f6; color: #374151; }
+        
+        .agreement {
+          margin-top: 40px;
+          background: #fff1f2;
+          border: 1px solid #ffe4e6;
+          border-radius: 12px;
+          padding: 24px;
+        }
+        .agreement h3 {
+          margin: 0 0 12px;
+          color: #be123c;
+          font-size: 18px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .agreement p { margin: 0; color: #9f1239; font-size: 15px; line-height: 1.6; }
+        .highlight-fee { font-size: 18px; font-weight: 700; background: #be123c; color: white; padding: 2px 8px; border-radius: 4px; }
+        
+        .footer {
+          text-align: center;
+          padding: 24px;
+          color: #9ca3af;
+          font-size: 14px;
+          background: #f9fafb;
+          border-top: 1px solid #f3f4f6;
+        }
+        
+        @media print {
+          body { background-color: #ffffff; padding: 0; }
+          .receipt-container { box-shadow: none; max-width: 100%; border: none; }
+          .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .agreement { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .status-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .highlight-fee { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+      </style>
+      </head>
+      <body>
+        <div class="receipt-container">
+          <div class="header">
+            <h1>Booking Receipt</h1>
+            <p>Reference ID: #${inv.id.slice(0,8).toUpperCase()}</p>
+          </div>
+          <div class="content">
+            <div class="detail-row">
+              <span class="detail-label">Date Issued</span>
+              <span class="detail-value">${new Date().toLocaleString()}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Status</span>
+              <span class="detail-value">
+                <span class="status-badge ${statusClass}">${status}</span>
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Plan Day</span>
+              <span class="detail-value">${inv.selected_day || 'Not selected'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Time</span>
+              <span class="detail-value">${inv.selected_time || 'Not selected'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Food Choice</span>
+              <span class="detail-value" style="text-transform: capitalize;">${inv.food_choice || 'Not selected'}</span>
+            </div>
+
+            <div class="agreement">
+              <h3>⚠️ Cancellation Agreement</h3>
+              <p>By confirming this invitation, you agree to our terms and conditions. If this reservation is cancelled, a cancellation fee of <span class="highlight-fee">₹499</span> will be charged to the original payment method. Please ensure you are available on the selected date and time.</p>
+            </div>
+          </div>
+          <div class="footer">
+            Thank you for your response! Keep this receipt for your records.
+          </div>
+        </div>
+        <script>
+          window.onload = () => { window.print(); }
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(receiptHTML);
+      printWindow.document.close();
+    } else {
+      alert("Please allow pop-ups to download the receipt.");
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -195,6 +345,12 @@ export default function AdminDashboardClient({
                         <Link href={`/admin/invitations/${inv.id}`} className="text-pink-600 hover:text-pink-900">
                           View
                         </Link>
+                        <button
+                          onClick={() => handleDownloadReceipt(inv)}
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          Receipt
+                        </button>
                         <button
                           onClick={() => handleDelete(inv.id)}
                           disabled={isDeleting === inv.id}
